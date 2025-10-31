@@ -1,0 +1,95 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int dentro_tabuleiro(char coluna, int linha) {
+    return (coluna >= 'a' && coluna <= 'h' && linha >= 1 && linha <= 8);
+}
+
+int main() {
+    char peca[20];
+    char pos[4];
+    char col;
+    int lin;
+
+    printf("Digite a peça: ");
+    scanf("%s", peca);
+
+    for (int i = 0; peca[i]; i++)
+        peca[i] = tolower(peca[i]);
+
+    printf("Digite a posição atual (ex: d4): ");
+    scanf("%s", pos);
+
+    col = pos[0];
+    lin = pos[1] - '0';
+
+    printf("\nPossíveis movimentos da %s a partir de %c%d:\n\n", peca, col, lin);
+
+    if (strcmp(peca, "torre") == 0) {
+        for (char c = 'a'; c <= 'h'; c++)
+            if (c != col) printf("%c%d ", c, lin);
+        for (int l = 1; l <= 8; l++)
+            if (l != lin) printf("%c%d ", col, l);
+    }
+
+    else if (strcmp(peca, "bispo") == 0) {
+        for (int i = 1; i <= 8; i++) {
+            char c1 = col + i, c2 = col - i;
+            int l1 = lin + i, l2 = lin - i;
+            if (dentro_tabuleiro(c1, l1)) printf("%c%d ", c1, l1);
+            if (dentro_tabuleiro(c1, l2)) printf("%c%d ", c1, l2);
+            if (dentro_tabuleiro(c2, l1)) printf("%c%d ", c2, l1);
+            if (dentro_tabuleiro(c2, l2)) printf("%c%d ", c2, l2);
+        }
+    }
+
+    else if (strcmp(peca, "rainha") == 0) {
+        for (char c = 'a'; c <= 'h'; c++)
+            if (c != col) printf("%c%d ", c, lin);
+        for (int l = 1; l <= 8; l++)
+            if (l != lin) printf("%c%d ", col, l);
+        for (int i = 1; i <= 8; i++) {
+            char c1 = col + i, c2 = col - i;
+            int l1 = lin + i, l2 = lin - i;
+            if (dentro_tabuleiro(c1, l1)) printf("%c%d ", c1, l1);
+            if (dentro_tabuleiro(c1, l2)) printf("%c%d ", c1, l2);
+            if (dentro_tabuleiro(c2, l1)) printf("%c%d ", c2, l1);
+            if (dentro_tabuleiro(c2, l2)) printf("%c%d ", c2, l2);
+        }
+    }
+
+    else if (strcmp(peca, "rei") == 0) {
+        for (int dc = -1; dc <= 1; dc++)
+            for (int dl = -1; dl <= 1; dl++)
+                if (!(dc == 0 && dl == 0)) {
+                    char c = col + dc;
+                    int l = lin + dl;
+                    if (dentro_tabuleiro(c, l)) printf("%c%d ", c, l);
+                }
+    }
+
+    else if (strcmp(peca, "cavalo") == 0) {
+        int movimentos[8][2] = {
+            {1, 2}, {2, 1}, {-1, 2}, {-2, 1},
+            {1, -2}, {2, -1}, {-1, -2}, {-2, -1}
+        };
+        for (int i = 0; i < 8; i++) {
+            char c = col + movimentos[i][0];
+            int l = lin + movimentos[i][1];
+            if (dentro_tabuleiro(c, l)) printf("%c%d ", c, l);
+        }
+    }
+
+    else if (strcmp(peca, "peao") == 0) {
+        int l = lin + 1;
+        if (dentro_tabuleiro(col, l)) printf("%c%d ", col, l);
+    }
+
+    else {
+        printf("Peça inválida!");
+    }
+
+    printf("\n\n");
+    return 0;
+}
